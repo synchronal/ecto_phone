@@ -1,5 +1,7 @@
 # Change log
 
+## 1.1.0
+
 - Implement `Phoenix.HTML.Safe` when `phoenix_html` is present.
 
 ## 1.0.2
