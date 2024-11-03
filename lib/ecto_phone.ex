@@ -40,25 +40,36 @@ defmodule EctoPhone do
   @default_prefix Application.compile_env(:ecto_phone, :default_prefix, 1)
   @default_format Application.compile_env(:ecto_phone, :default_format, :international)
 
+  @type format() :: :e164 | :international | :national | :rfc3966
+  @typedoc """
+  - `e` — `:e164`
+  - `i` — `:international`
+  - `n` — `:national`
+  - `rfc` — `:rfc3966`
+  """
+  @type format_modifier() :: charlist()
+  @type init_opts() :: [default_prefix: integer(), format: format()]
+
   @behaviour Ecto.ParameterizedType
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+          e164: integer(),
+          format: format()
+        }
 
   @enforce_keys ~w[e164 format]a
   defstruct ~w[e164 format]a
 
   defimpl Inspect do
-    def inspect(%{e164: e164}, _opts) do
-      ~s(#EctoPhoneNumber<#{e164}>)
+    def inspect(phone, _opts) do
+      ~s(~PHONE[#{%{phone | format: :international}}]#{EctoPhone.format_modifier(phone.format)})
     end
   end
 
   defimpl String.Chars do
-    def to_string(%{e164: e164, format: format}) do
-      with e164_integer when is_integer(e164_integer) <- e164,
-           {:ok, ex_phone_number} <- ExPhoneNumber.parse("+" <> Integer.to_string(e164_integer), nil) do
-        ExPhoneNumber.format(ex_phone_number, format)
-      else
-        _ -> Kernel.to_string(e164)
+    def to_string(%{e164: e164, format: format}) when is_integer(e164) do
+      case ExPhoneNumber.parse("+" <> Integer.to_string(e164), nil) do
+        {:ok, ex_phone_number} -> ExPhoneNumber.format(ex_phone_number, format)
+        _other -> Kernel.to_string(e164)
       end
     end
   end
@@ -68,10 +79,12 @@ defmodule EctoPhone do
 
   ## Modifers
 
-  - `e`: Format as `:e164`
-  - `i`: Format as `:international`
-  - `n`: Format as `:national`
+  - `e` — format as `:e164`
+  - `i` — format as `:international`
+  - `n` — format as `:national`
+  - `rfc` — format as `:rfc3966`
   """
+  @spec sigil_PHONE(binary(), format_modifier()) :: t()
   def sigil_PHONE(number, modifiers) do
     format =
       case modifiers do
@@ -91,7 +104,7 @@ defmodule EctoPhone do
   end
 
   @doc """
-  Configures a specific field.
+  Configures a specific field with `t:init_opts/0`.
 
   ``` elixir
   schema "table_name" do
@@ -146,6 +159,12 @@ defmodule EctoPhone do
   def equal?(left, right, opts), do: cast(left, opts) == cast(right, opts)
 
   # # #
+
+  @doc false
+  def format_modifier(:e164), do: ~c"e"
+  def format_modifier(:international), do: ~c"i"
+  def format_modifier(:national), do: ~c"n"
+  def format_modifier(:rfc3966), do: ~c"rfc"
 
   defp validate_opts(opts) do
     {default_prefix, opts} = Keyword.pop(opts, :default_prefix, @default_prefix)

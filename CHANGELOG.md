@@ -1,5 +1,7 @@
 # Change log
 
+- `inspect` returns a phone sigil.
+
 ## 1.0.1
 
 - Docs open to main module.

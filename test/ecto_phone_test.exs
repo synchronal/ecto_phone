@@ -47,6 +47,15 @@ defmodule EctoPhoneTest do
     end
   end
 
+  describe "inspect" do
+    test "renders as a ~PHONE sigil" do
+      assert ~PHONE[14155555555]i |> inspect() == "~PHONE[+1 415-555-5555]i"
+      assert ~PHONE[14155555555]e |> inspect() == "~PHONE[+1 415-555-5555]e"
+      assert ~PHONE[14155555555]n |> inspect() == "~PHONE[+1 415-555-5555]n"
+      assert ~PHONE[14155555555]rfc |> inspect() == "~PHONE[+1 415-555-5555]rfc"
+    end
+  end
+
   describe "to_string" do
     test "formats :international" do
       assert ~PHONE"14155555555"i |> to_string() == "+1 415-555-5555"
