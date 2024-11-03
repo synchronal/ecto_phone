@@ -56,6 +56,12 @@ defmodule EctoPhoneTest do
     end
   end
 
+  describe "to_iodata" do
+    test "returns the phone as a string" do
+      assert ~PHONE"14155555555"i |> Phoenix.HTML.Safe.to_iodata() == "+1 415-555-5555"
+    end
+  end
+
   describe "to_string" do
     test "formats :international" do
       assert ~PHONE"14155555555"i |> to_string() == "+1 415-555-5555"

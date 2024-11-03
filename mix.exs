@@ -53,6 +53,7 @@ defmodule EctoPhone.MixProject do
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
       {:ex_phone_number, "~> 0.4"},
       {:mix_audit, "~> 2.1", only: [:dev], runtime: false},
+      {:phoenix_html, "~> 4.1", optional: true},
       {:postgrex, "> 0.0.0", only: :test},
       {:schema_assertions, "~> 1.1", only: :test}
     ]

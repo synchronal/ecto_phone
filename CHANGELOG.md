@@ -1,5 +1,7 @@
 # Change log
 
+- Implement `Phoenix.HTML.Safe` when `phoenix_html` is present.
+
 ## 1.0.2
 
 - `inspect` returns a phone sigil.

@@ -65,6 +65,14 @@ defmodule EctoPhone do
     end
   end
 
+  if Code.ensure_loaded?(Phoenix.HTML.Safe) do
+    defimpl Phoenix.HTML.Safe do
+      def to_iodata(phone) do
+        Kernel.to_string(phone)
+      end
+    end
+  end
+
   defimpl String.Chars do
     def to_string(%{e164: e164, format: format}) when is_integer(e164) do
       case ExPhoneNumber.parse("+" <> Integer.to_string(e164), nil) do
