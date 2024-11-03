@@ -1,9 +1,11 @@
 *.ez
 /.fetch
+/.local
 /_build/
 /cover/
 /deps/
 /doc/
 /tmp/
+Brewfile.lock.json
 ecto_phone-*.tar
 erl_crash.dump
