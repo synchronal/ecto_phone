@@ -16,7 +16,7 @@ checks = [
 [test]
 checks = [
   {name = "Check for Elixir warnings", shell = "mix compile --force --warnings-as-errors", verbose = true},
-  {name = "Run tests", shell = "mix test"},
+  {name = "Run Elixir tests", shell = "mix test --color --warnings-as-errors", verbose = true},
 ]
 
 [audit]

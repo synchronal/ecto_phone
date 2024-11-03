@@ -6,11 +6,13 @@ defmodule EctoPhone.MixProject do
 
   def project do
     [
+      aliases: aliases(),
       app: :ecto_phone,
       deps: deps(),
       description: "An Ecto.ParameterizedType for phone numbers",
       dialyzer: dialyzer(),
-      elixir: "~> 1.17",
+      elixir: "~> 1.15",
+      elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @homepage,
       name: "EctoPhone",
       package: package(),
@@ -35,16 +37,23 @@ defmodule EctoPhone.MixProject do
 
   # # #
 
+  defp aliases,
+    do: [
+      test: ["ecto.create --quiet", "test"]
+    ]
+
   defp deps,
     do: [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:ecto_sql, "> 0.0.0", optional: true},
       {:ecto, "~> 3.12"},
+      {:ecto_sql, "> 0.0.0", only: :test},
       {:ecto_temp, "~> 1.1", only: :test},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false},
+      {:ex_phone_number, "~> 0.4"},
       {:mix_audit, "~> 2.1", only: [:dev], runtime: false},
-      {:postgrex, "> 0.0.0", optional: true}
+      {:postgrex, "> 0.0.0", only: :test},
+      {:schema_assertions, "~> 1.1", only: :test}
     ]
 
   defp dialyzer,
@@ -54,6 +63,9 @@ defmodule EctoPhone.MixProject do
       plt_core_path: "_build/plts/#{Mix.env()}",
       plt_local_path: "_build/plts/#{Mix.env()}"
     ]
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp package,
     do: [
