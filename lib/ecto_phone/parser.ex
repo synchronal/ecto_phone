@@ -3,7 +3,7 @@ defmodule EctoPhone.Parser do
   alias EctoPhone.Error
 
   @spec parse(integer() | binary(), keyword()) ::
-          {:ok, EctoPhone.t()} | {:error, nil} | {:error, EctoPhone.Error}
+          {:ok, EctoPhone.t()} | {:error, nil} | {:error, EctoPhone.Error.t()}
 
   def parse(number, opts) when is_integer(number),
     do: Kernel.to_string(number) |> parse(opts)
@@ -17,8 +17,8 @@ defmodule EctoPhone.Parser do
 
   # # #
 
-  @spec parse(binary(), keyword()) ::
-          {:ok, EctoPhone.t()} | {:error, nil} | {:error, EctoPhone.Error}
+  @spec parse_phone(binary(), keyword()) ::
+          {:ok, EctoPhone.t()} | {:error, nil} | {:error, EctoPhone.Error.t()}
   defp parse_phone(phone, opts) do
     with :ok <- validate_numeric(phone),
          {:ok, ex_phone_number} <- ExPhoneNumber.parse("+" <> phone, nil),

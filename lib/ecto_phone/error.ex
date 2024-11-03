@@ -19,6 +19,8 @@ defmodule EctoPhone.Error do
   """
   defexception ~w[type passthrough]a
 
+  @type t() :: %__MODULE__{}
+
   @impl Exception
   def exception(type: atom) when atom in ~w[format parser unknown validation]a do
     %__MODULE__{type: atom}
