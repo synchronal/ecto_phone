@@ -11,6 +11,7 @@ defmodule EctoPhone.MixProject do
       deps: deps(),
       description: "An Ecto.ParameterizedType for phone numbers",
       dialyzer: dialyzer(),
+      docs: docs(),
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @homepage,
@@ -62,6 +63,12 @@ defmodule EctoPhone.MixProject do
       plt_add_deps: :app_tree,
       plt_core_path: "_build/plts/#{Mix.env()}",
       plt_local_path: "_build/plts/#{Mix.env()}"
+    ]
+
+  defp docs,
+    do: [
+      main: "EctoPhone",
+      extras: ["LICENSE.md", "CHANGELOG.md"]
     ]
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
