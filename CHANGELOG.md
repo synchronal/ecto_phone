@@ -1,5 +1,7 @@
 # Change log
 
+## 1.0.2
+
 - `inspect` returns a phone sigil.
 
 ## 1.0.1
