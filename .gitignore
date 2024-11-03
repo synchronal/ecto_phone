@@ -1,0 +1,9 @@
+*.ez
+/.fetch
+/_build/
+/cover/
+/deps/
+/doc/
+/tmp/
+ecto_phone-*.tar
+erl_crash.dump
