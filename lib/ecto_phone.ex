@@ -129,6 +129,7 @@ defmodule EctoPhone do
   def type(_opts), do: :string
 
   @impl Ecto.ParameterizedType
+  def cast(value, opts \\ [])
   def cast(nil, _opts), do: {:ok, nil}
   def cast(%__MODULE__{} = phone_number, _opts), do: {:ok, phone_number}
   def cast(integer, opts) when is_integer(integer), do: Kernel.to_string(integer) |> cast(opts)
@@ -164,7 +165,7 @@ defmodule EctoPhone do
   def embed_as(_format, _params), do: :self
 
   @impl Ecto.ParameterizedType
-  def equal?(left, right, opts), do: cast(left, opts) == cast(right, opts)
+  def equal?(left, right, opts \\ []), do: cast(left, opts) == cast(right, opts)
 
   # # #
 
