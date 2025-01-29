@@ -47,8 +47,16 @@ defmodule EctoPhone.Parser do
   defp validate_phone(phone),
     do: if(ExPhoneNumber.is_valid_number?(phone), do: :ok, else: {:error, :invalid})
 
-  defp ensure_prefix(phone_number, opts) when byte_size(phone_number) == 10,
-    do: "#{opts[:default_prefix]}#{phone_number}"
+  defp ensure_prefix(phone_number, opts) when byte_size(phone_number) == 10 do
+    default_prefix = opts[:default_prefix]
+
+    if is_binary(default_prefix) && String.length(default_prefix) &&
+         String.starts_with?(phone_number, opts[:default_prefix]) do
+      phone_number
+    else
+      "#{opts[:default_prefix]}#{phone_number}"
+    end
+  end
 
   defp ensure_prefix(phone_number, _opts), do: phone_number
 end
