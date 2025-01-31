@@ -1,5 +1,7 @@
 # Change log
 
+## 2.0.0
+
 - Test against Elixir 1.18.
 - **Breaking change:** drop support for Elixir 1.15.
 
