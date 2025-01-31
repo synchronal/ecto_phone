@@ -1,5 +1,10 @@
 # Change log
 
+## 2.0.1
+
+- Only add default prefix when the phone number does not already begin
+  with it.
+
 ## 2.0.0
 
 - Test against Elixir 1.18.
