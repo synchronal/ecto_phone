@@ -1,5 +1,8 @@
 # Change log
 
+- Test against Elixir 1.18.
+- **Breaking change:** drop support for Elixir 1.15.
+
 ## 1.1.0
 
 - Implement `Phoenix.HTML.Safe` when `phoenix_html` is present.

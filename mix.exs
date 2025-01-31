@@ -12,7 +12,7 @@ defmodule EctoPhone.MixProject do
       description: "An Ecto.ParameterizedType for phone numbers",
       dialyzer: dialyzer(),
       docs: docs(),
-      elixir: "~> 1.15",
+      elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @homepage,
       name: "EctoPhone",
