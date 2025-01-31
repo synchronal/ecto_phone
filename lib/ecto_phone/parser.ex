@@ -50,7 +50,7 @@ defmodule EctoPhone.Parser do
   defp ensure_prefix(phone_number, opts) when byte_size(phone_number) == 10 do
     default_prefix = opts[:default_prefix]
 
-    if is_binary(default_prefix) && String.length(default_prefix) &&
+    if is_binary(default_prefix) && String.length(default_prefix) > 0 &&
          String.starts_with?(phone_number, opts[:default_prefix]) do
       phone_number
     else
