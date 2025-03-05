@@ -1,5 +1,10 @@
 # Change log
 
+## 2.0.2
+
+- Fix parsing Swedish landline number without prefix. Thanks
+  <stefan@recycla.se>!
+
 ## 2.0.1
 
 - Only add default prefix when the phone number does not already begin
