@@ -80,6 +80,9 @@ defmodule EctoPhone.MixProject do
       files: ~w(lib .formatter.exs mix.exs *.md),
       licenses: ["MIT"],
       maintainers: ["synchronal.dev", "Erik Hanson", "Eric Saxby"],
-      links: %{"GitHub" => @homepage}
+      links: %{
+        "GitHub" => @homepage,
+        "Sponsor" => "https://github.com/sponsors/reflective-dev"
+      }
     ]
 end
