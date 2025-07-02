@@ -45,6 +45,10 @@ defmodule EctoPhoneTest do
     test "can specify rfc3966" do
       assert ~PHONE[14155555555]rfc == %EctoPhone{e164: 14_155_555_555, format: :rfc3966}
     end
+
+    test "handles known edge cases" do
+      assert ~PHONE[45 32 12 34 56] == %EctoPhone{e164: 4_532_123_456, format: :international}
+    end
   end
 
   describe "inspect" do
