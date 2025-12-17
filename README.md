@@ -17,7 +17,7 @@ see, file an issue or contact us at
 ## Installation
 
 ``` elixir
-  {:ecto_phone "~> 1.0"}
+  {:ecto_phone, "~> 1.0"}
 ```
 
 ## Usage
