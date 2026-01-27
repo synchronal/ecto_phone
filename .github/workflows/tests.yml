@@ -14,11 +14,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16
-              otp: 25
+              elixir: 1.17
+              otp: 26
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Build Test
     runs-on: ubuntu-22.04
     env:
@@ -58,11 +58,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16
-              otp: 25
+              elixir: 1.17
+              otp: 26
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Build Dev
     runs-on: ubuntu-22.04
     env:
@@ -102,11 +102,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16
-              otp: 25
+              elixir: 1.17
+              otp: 26
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Test
     needs: build_test
     runs-on: ubuntu-22.04
@@ -114,7 +114,7 @@ jobs:
       MIX_ENV: test
     services:
       postgres:
-        image: postgres:17.4-alpine
+        image: postgres:18.1-alpine
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
@@ -153,11 +153,11 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.16
-              otp: 25
+              elixir: 1.17
+              otp: 26
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Credo + Dialyxir
     needs: build_test
     runs-on: ubuntu-22.04
@@ -198,8 +198,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Docs
     needs: build_dev
     runs-on: ubuntu-22.04
@@ -232,8 +232,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Audit
     needs: build_dev
     runs-on: ubuntu-22.04
@@ -278,8 +278,8 @@ jobs:
       matrix:
         include:
           - pair:
-              elixir: 1.18
-              otp: 27
+              elixir: 1.19
+              otp: 28
     name: Publish to Hex
     if: github.ref == 'refs/heads/main'
     needs:
