@@ -11,7 +11,7 @@ assert_file() {
 }
 
 check_all_files() {
-  for file in $(find . -name '*.md' -not -path './deps/*'); do
+  for file in $(find . -name '*.md' -not -path './doc/*' -not -path './deps/*'); do
     check_file "${file}"
   done
 }
@@ -34,7 +34,7 @@ check_file() {
 }
 
 format_all_files() {
-  for file in $(find . -name '*.md' -not -path './deps/*'); do
+  for file in $(find . -name '*.md' -not -path './doc/*' -not -path './deps/*'); do
     format_file "${file}"
   done
 }
