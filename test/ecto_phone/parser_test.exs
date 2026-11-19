@@ -24,5 +24,45 @@ defmodule EctoPhone.ParserTest do
       assert {:ok, phone} = Parser.parse("4502001234", default_prefix: "1", format: :international)
       assert phone |> to_string() == "+1 450-200-1234"
     end
+
+    test "parses Vienna landlines with an integer default prefix" do
+      for input <- ["+43 1 234567", "43 1 234567", "+43 1 2345678", "43 1 2345678"] do
+        assert {:ok, phone} = Parser.parse(input, default_prefix: 43, format: :e164), input
+        assert phone.e164 in [431_234_567, 4_312_345_678], input
+      end
+    end
+
+    test "parses Vienna landlines without country code" do
+      assert {:ok, phone} = Parser.parse("01 2345678", default_prefix: 43, format: :e164)
+      assert phone.e164 == 4_312_345_678
+    end
+
+    test "parses numbers with a national trunk prefix" do
+      assert {:ok, phone} = Parser.parse("0664 1234567", default_prefix: 43, format: :e164)
+      assert phone.e164 == 436_641_234_567
+    end
+
+    test "parses numbers with an international call prefix" do
+      assert {:ok, phone} = Parser.parse("0043 664 1234567", default_prefix: 43, format: :e164)
+      assert phone.e164 == 436_641_234_567
+
+      assert {:ok, phone} = Parser.parse("011 43 664 1234567", default_prefix: 1, format: :e164)
+      assert phone.e164 == 436_641_234_567
+    end
+
+    test "does not add the default prefix to numbers starting with +" do
+      assert {:ok, phone} = Parser.parse("+45 32 123456", default_prefix: 43, format: :e164)
+      assert phone.e164 == 4_532_123_456
+    end
+
+    test "parses 10-digit international numbers with a different default prefix (issue #1)" do
+      assert {:ok, phone} = Parser.parse("+46 40 19 12 40", default_prefix: 1, format: :international)
+      assert phone |> to_string() == "+46 40 19 12 40"
+    end
+
+    test "returns a format error for non-numeric input" do
+      assert {:error, error} = Parser.parse("0664 abc", default_prefix: 43, format: :e164)
+      assert Exception.message(error) == "expected to be in the format +<country code> <number>"
+    end
   end
 end

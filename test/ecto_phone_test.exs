@@ -113,7 +113,7 @@ defmodule EctoPhoneTest do
 
     test "is invalid with letters" do
       assert_changeset_invalid HasPhone.changeset(phone: "415555abcd"),
-        phone: ["expected to be in the format +1 ###-###-####"]
+        phone: ["expected to be in the format +<country code> <number>"]
     end
 
     test "is invalid with a non-existent phone number" do
@@ -122,12 +122,12 @@ defmodule EctoPhoneTest do
 
       assert_changeset_invalid HasPhone.changeset(phone: "555-000-0000"),
         phone: ["is not a valid phone number"]
+
+      assert_changeset_invalid HasPhone.changeset(phone: "000"),
+        phone: ["is not a valid phone number"]
     end
 
     test "passes through ex_phone_number errors" do
-      assert_changeset_invalid HasPhone.changeset(phone: "000"),
-        phone: ["invalid country calling code"]
-
       assert_changeset_invalid HasPhone.changeset(phone: "+99 123 456 7890"),
         phone: ["invalid country calling code"]
     end

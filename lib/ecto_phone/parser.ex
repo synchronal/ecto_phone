@@ -9,19 +9,30 @@ defmodule EctoPhone.Parser do
     do: Kernel.to_string(number) |> parse(opts)
 
   def parse(string, opts) when is_binary(string) do
-    string
-    |> String.replace(~r/[\+-\.()\s]/, "")
-    |> ensure_prefix(opts)
-    |> parse_phone(opts)
+    digits = String.replace(string, ~r/[\+-\.()\s]/, "")
+
+    cond do
+      # An explicit `+` means the number already carries its country code.
+      String.starts_with?(String.trim_leading(string), "+") ->
+        parse_phone("+" <> digits, nil, opts)
+
+      # A leading `0` is a trunk prefix (`0664…`) or an international
+      # call prefix (`0043…`); both depend on the default country.
+      String.starts_with?(digits, "0") ->
+        parse_phone(digits, default_region(opts), opts)
+
+      true ->
+        parse_phone("+" <> ensure_prefix(digits, opts), nil, opts)
+    end
   end
 
   # # #
 
-  @spec parse_phone(binary(), keyword()) ::
+  @spec parse_phone(binary(), binary() | nil, keyword()) ::
           {:ok, EctoPhone.t()} | {:error, nil} | {:error, EctoPhone.Error.t()}
-  defp parse_phone(phone, opts) do
+  defp parse_phone(phone, region, opts) do
     with :ok <- validate_numeric(phone),
-         {:ok, ex_phone_number} <- ExPhoneNumber.parse("+" <> phone, nil),
+         {:ok, ex_phone_number} <- ExPhoneNumber.parse(phone, region),
          :ok <- validate_phone(ex_phone_number),
          "+" <> e164_string <- ExPhoneNumber.format(ex_phone_number, :e164),
          {e164_integer, ""} <- Integer.parse(e164_string) do
@@ -42,7 +53,7 @@ defmodule EctoPhone.Parser do
   end
 
   defp validate_numeric(string),
-    do: if(Regex.match?(~r/^\d+$/, string), do: :ok, else: {:error, :non_numeric})
+    do: if(Regex.match?(~r/^\+?\d+$/, string), do: :ok, else: {:error, :non_numeric})
 
   defp validate_phone(phone),
     do: if(ExPhoneNumber.is_valid_number?(phone), do: :ok, else: {:error, :invalid})
@@ -51,15 +62,21 @@ defmodule EctoPhone.Parser do
   defp ensure_prefix("45" <> <<_::binary-size(8)>> = phone, _opts), do: phone
 
   defp ensure_prefix(phone_number, opts) when byte_size(phone_number) in 9..10 do
-    default_prefix = opts[:default_prefix]
+    default_prefix = to_string(opts[:default_prefix])
 
-    if is_binary(default_prefix) && String.length(default_prefix) > 0 &&
-         String.starts_with?(phone_number, opts[:default_prefix]) do
+    if default_prefix != "" && String.starts_with?(phone_number, default_prefix) do
       phone_number
     else
-      "#{opts[:default_prefix]}#{phone_number}"
+      default_prefix <> phone_number
     end
   end
 
   defp ensure_prefix(phone_number, _opts), do: phone_number
+
+  defp default_region(opts) do
+    case Integer.parse(to_string(opts[:default_prefix])) do
+      {country_code, ""} -> ExPhoneNumber.Metadata.get_region_code_for_country_code(country_code)
+      _other -> nil
+    end
+  end
 end

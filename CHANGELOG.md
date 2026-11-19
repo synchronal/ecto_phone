@@ -1,5 +1,20 @@
 # Change log
 
+## Unreleased
+
+- Fix integer `:default_prefix` being added to numbers that already
+  start with it (e.g. `43 1 234567` with `default_prefix: 43`).
+- Numbers starting with `+` never receive the default prefix.
+- Numbers starting with `0` are parsed against the default prefix's
+  region, so trunk prefixes (`0664 …`) and international call prefixes
+  (`0043 …`, `011 …`) are handled.
+
+### Breaking changes
+
+- The format error message is now
+  `"expected to be in the format +<country code> <number>"` instead of
+  `"expected to be in the format +1 ###-###-####"`.
+
 ## 2.0.2
 
 - Fix parsing Swedish landline number without prefix. Thanks

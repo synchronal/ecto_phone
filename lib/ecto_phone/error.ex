@@ -5,7 +5,7 @@ defmodule EctoPhone.Error do
 
   ``` elixir
   iex> Exception.message(EctoPhone.Error.exception(type: :format))
-  "expected to be in the format +1 ###-###-####"
+  "expected to be in the format +<country code> <number>"
 
   iex> Exception.message(EctoPhone.Error.exception(type: :validation))
   "is not a valid phone number"
@@ -38,7 +38,7 @@ defmodule EctoPhone.Error do
   defimpl String.Chars do
     def to_string(error) do
       case error do
-        %{type: :format} -> "expected to be in the format +1 ###-###-####"
+        %{type: :format} -> "expected to be in the format +<country code> <number>"
         %{type: :parser, passthrough: m} -> m
         %{type: :unknown} -> "is not valid"
         %{type: :validation} -> "is not a valid phone number"
