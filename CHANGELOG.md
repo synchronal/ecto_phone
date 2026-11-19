@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.0.0
+
 - Fix integer `:default_prefix` being added to numbers that already
   start with it (e.g. `43 1 234567` with `default_prefix: 43`).
 - Numbers starting with `+` never receive the default prefix.
