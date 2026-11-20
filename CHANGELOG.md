@@ -12,6 +12,8 @@
   `450 200 1234` only becomes `+1 450-200-1234` when the default prefix
   is `1`, and a `45…` number that is valid for the default country is
   read as that country's number instead of a Danish one.
+- Add a guide to building a Phoenix phone input with a calling code
+  select.
 
 ## 3.0.0
 

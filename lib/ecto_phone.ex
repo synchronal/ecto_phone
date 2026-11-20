@@ -43,6 +43,9 @@ defmodule EctoPhone do
   #=> {:ok, ~PHONE[+39 06 1234 5678]}
   ```
 
+  See the [phone input guide](phone-input-component.md) for a Phoenix
+  component that submits this map.
+
   ## Configuration
 
   ``` elixir

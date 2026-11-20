@@ -1,0 +1,3 @@
+[project]
+image = "compostbin/base:latest"
+name = "ecto_phone"

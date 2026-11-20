@@ -69,7 +69,8 @@ defmodule EctoPhone.MixProject do
   defp docs,
     do: [
       main: "EctoPhone",
-      extras: ["LICENSE.md", "CHANGELOG.md"]
+      extras: ["guides/phone-input-component.md", "CHANGELOG.md", "LICENSE.md"],
+      groups_for_extras: [Guides: ~r{guides/}]
     ]
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
