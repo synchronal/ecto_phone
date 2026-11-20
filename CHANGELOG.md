@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Numbers not starting with `+` are parsed as national numbers of the
+  default prefix's main country, for every country. If that gives no
+  valid number, the digits are tried as an international number missing
+  its `+`. This replaces the 9–10 digit `default_prefix` guess.
+- `cast/2` accepts `%{country_code: _, number: _}` (atom or string
+  keys), so the calling code can be chosen per value.
+- Remove the hard-coded rules for numbers starting with `45` and `450`.
+  `450 200 1234` only becomes `+1 450-200-1234` when the default prefix
+  is `1`, and a `45…` number that is valid for the default country is
+  read as that country's number instead of a Danish one.
+
 ## 3.0.0
 
 - Fix integer `:default_prefix` being added to numbers that already

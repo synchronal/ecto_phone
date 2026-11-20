@@ -60,6 +60,37 @@ defmodule EctoPhone.ParserTest do
       assert phone |> to_string() == "+46 40 19 12 40"
     end
 
+    test "parses national numbers without a trunk prefix for the default country" do
+      assert {:ok, phone} = Parser.parse("1 2345678", default_prefix: 43, format: :e164)
+      assert phone.e164 == 4_312_345_678
+
+      assert {:ok, phone} = Parser.parse("8 445 04 40", default_prefix: 46, format: :e164)
+      assert phone.e164 == 4_684_450_440
+    end
+
+    test "keeps the leading 0 where it is part of the national number" do
+      assert {:ok, phone} = Parser.parse("06 1234 5678", default_prefix: 39, format: :e164)
+      assert phone.e164 == 390_612_345_678
+    end
+
+    test "parses international numbers missing their + when not valid for the default country" do
+      assert {:ok, phone} = Parser.parse("45 32 123456", default_prefix: 1, format: :e164)
+      assert phone.e164 == 4_532_123_456
+
+      assert {:ok, phone} = Parser.parse("39 06 1234 5678", default_prefix: 43, format: :e164)
+      assert phone.e164 == 390_612_345_678
+    end
+
+    test "parses international numbers missing their + without a default prefix" do
+      assert {:ok, phone} = Parser.parse("43 1 2345678", default_prefix: nil, format: :e164)
+      assert phone.e164 == 4_312_345_678
+    end
+
+    test "returns the error for the default country when neither reading is valid" do
+      assert {:error, error} = Parser.parse("555 000 0000", default_prefix: 1, format: :e164)
+      assert Exception.message(error) == "is not a valid phone number"
+    end
+
     test "returns a format error for non-numeric input" do
       assert {:error, error} = Parser.parse("0664 abc", default_prefix: 43, format: :e164)
       assert Exception.message(error) == "expected to be in the format +<country code> <number>"

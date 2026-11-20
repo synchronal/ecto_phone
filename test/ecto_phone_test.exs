@@ -133,6 +133,44 @@ defmodule EctoPhoneTest do
     end
   end
 
+  describe "cast with a country code" do
+    test "parses the number for the given calling code" do
+      changeset = HasPhone.changeset(phone: %{"country_code" => "39", "number" => "06 1234 5678"})
+      assert_changeset_valid changeset
+      assert changeset.changes.phone == %EctoPhone{e164: 390_612_345_678, format: :international}
+
+      assert {:ok, %EctoPhone{e164: 4_312_345_678}} =
+               EctoPhone.cast(%{country_code: 43, number: "01 2345678"}, default_prefix: 1)
+
+      assert {:ok, %EctoPhone{e164: 4_312_345_678}} =
+               EctoPhone.cast(%{country_code: "+43", number: "1 2345678"}, default_prefix: 1)
+    end
+
+    test "honours an explicit + in the number" do
+      assert {:ok, %EctoPhone{e164: 4_532_123_456}} =
+               EctoPhone.cast(%{country_code: "39", number: "+45 32 123456"}, default_prefix: 1)
+    end
+
+    test "uses the default prefix when the country code is blank" do
+      assert {:ok, %EctoPhone{e164: 14_155_555_555}} =
+               EctoPhone.cast(%{"country_code" => "", "number" => "415 555 5555"}, default_prefix: 1)
+    end
+
+    test "is nil when the number is blank" do
+      assert EctoPhone.cast(%{"country_code" => "39", "number" => ""}, []) == {:ok, nil}
+    end
+
+    test "is invalid with an unknown calling code" do
+      assert_changeset_invalid HasPhone.changeset(phone: %{"country_code" => "999", "number" => "1234567"}),
+        phone: ["invalid country calling code"]
+    end
+
+    test "is invalid when the number is not valid for the calling code" do
+      assert_changeset_invalid HasPhone.changeset(phone: %{"country_code" => "39", "number" => "12"}),
+        phone: ["is not a valid phone number"]
+    end
+  end
+
   describe "dump" do
     test "can persist a valid phone number" do
       assert {:ok, record} = HasPhone.changeset(phone: "14155555555") |> Test.Repo.insert()

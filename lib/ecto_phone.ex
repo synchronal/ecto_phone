@@ -21,6 +21,28 @@ defmodule EctoPhone do
   end
   ```
 
+  ## Parsing
+
+  - Numbers starting with `+` are international numbers.
+  - Other numbers are parsed as national numbers of the main country for
+    the default prefix, so that country's trunk prefix (`0664 …` in
+    Austria), international call prefix (`0043 …`, `011 …`) and a
+    repeated country code (`43 1 234567`) are handled. If that is
+    invalid, the digits are tried as an international number without its
+    `+` (`45 32 12 34 56`).
+
+  ## Choosing the country per value
+
+  To let users pick a calling code, cast a map with `country_code` and
+  `number` (atom or string keys). The calling code replaces the field's
+  default prefix for that value; a blank `country_code` falls back to the
+  default prefix, and a blank `number` casts to `nil`.
+
+  ``` elixir
+  EctoPhone.cast(%{"country_code" => "39", "number" => "06 1234 5678"}, [])
+  #=> {:ok, ~PHONE[+39 06 1234 5678]}
+  ```
+
   ## Configuration
 
   ``` elixir
@@ -132,6 +154,8 @@ defmodule EctoPhone do
   def cast(value, opts \\ [])
   def cast(nil, _opts), do: {:ok, nil}
   def cast(%__MODULE__{} = phone_number, _opts), do: {:ok, phone_number}
+  def cast(%{country_code: code, number: number}, opts), do: cast_with_calling_code(code, number, opts)
+  def cast(%{"country_code" => code, "number" => number}, opts), do: cast_with_calling_code(code, number, opts)
   def cast(integer, opts) when is_integer(integer), do: Kernel.to_string(integer) |> cast(opts)
 
   def cast(string, opts) when is_binary(string) do
@@ -168,6 +192,15 @@ defmodule EctoPhone do
   def equal?(left, right, opts \\ []), do: cast(left, opts) == cast(right, opts)
 
   # # #
+
+  defp cast_with_calling_code(_code, number, _opts) when number in [nil, ""], do: {:ok, nil}
+  defp cast_with_calling_code(code, number, opts) when code in [nil, ""], do: cast(number, opts)
+
+  defp cast_with_calling_code(code, number, opts) do
+    if EctoPhone.Parser.region_for_calling_code(code),
+      do: cast(number, Keyword.put(opts, :default_prefix, code)),
+      else: {:error, message: "invalid country calling code"}
+  end
 
   @doc false
   def format_modifier(:e164), do: ~c"e"
