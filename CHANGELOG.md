@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.1.0
+
 - Numbers not starting with `+` are parsed as national numbers of the
   default prefix's main country, for every country. If that gives no
   valid number, the digits are tried as an international number missing

@@ -2,7 +2,7 @@ defmodule EctoPhone.MixProject do
   use Mix.Project
 
   @homepage "https://github.com/synchronal/ecto_phone"
-  @version "3.0.0"
+  @version "3.1.0"
 
   def project do
     [
